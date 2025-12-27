@@ -1,0 +1,135 @@
+<!-- ROOT ARRAY -->
+<div *ngIf="isArray(data) && !parent" class="panel panel-info">
+  <div class="panel-heading">
+    Root Array
+    <div class="pull-right">
+      <button class="btn btn-success btn-xs" (click)="addArrayItem(data)">
+        <span class="glyphicon glyphicon-plus"></span>
+      </button>
+      <a data-toggle="collapse" href="#root-{{uid}}" class="btn btn-default btn-xs">
+        <span class="glyphicon glyphicon-chevron-down"></span>
+      </a>
+    </div>
+  </div>
+  <div id="root-{{uid}}" class="panel-collapse collapse in">
+    <div class="panel-body">
+      <div *ngFor="let item of data; let i=index" class="panel panel-default">
+        <div class="panel-heading">
+          Item {{i+1}}
+          <div class="pull-right">
+            <button class="btn btn-danger btn-xs" (click)="removeArrayItem(data, i)">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <input *ngIf="isPrimitive(item)"
+                 class="form-control"
+                 [(ngModel)]="data[i]">
+          <app-json-editor *ngIf="isObject(item)"
+                           [data]="item"
+                           [parent]="data"
+                           [parentKey]="i">
+          </app-json-editor>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OBJECT -->
+<div *ngIf="isObject(data)" class="panel panel-success">
+  <div class="panel-heading">
+    {{ parentKey || 'Object' }}
+    <div class="pull-right">
+      <button *ngIf="parent" class="btn btn-success btn-xs" (click)="addField(data)">
+        <span class="glyphicon glyphicon-plus"></span>
+      </button>
+      <button *ngIf="parent" class="btn btn-info btn-xs" (click)="copyObject()">
+        <span class="glyphicon glyphicon-duplicate"></span>
+      </button>
+      <button *ngIf="parent" class="btn btn-danger btn-xs" (click)="removeObject()">
+        <span class="glyphicon glyphicon-trash"></span>
+      </button>
+      <a data-toggle="collapse" href="#obj-{{uid}}" class="btn btn-default btn-xs">
+        <span class="glyphicon glyphicon-chevron-down"></span>
+      </a>
+    </div>
+  </div>
+
+  <div id="obj-{{uid}}" class="panel-collapse collapse in">
+    <div class="panel-body">
+      <div *ngFor="let key of keys(data)" style="margin-bottom:6px">
+        <input class="form-control" style="width:30%; display:inline-block"
+               [ngModel]="key"
+               (ngModelChange)="onKeyChange(data, key, $event)">
+
+        <input *ngIf="isPrimitive(data[key])"
+               class="form-control"
+               style="width:55%; display:inline-block"
+               [(ngModel)]="data[key]">
+
+        <app-json-editor *ngIf="isObject(data[key])"
+                         [data]="data[key]"
+                         [parent]="data"
+                         [parentKey]="key">
+        </app-json-editor>
+
+        <div *ngIf="isArray(data[key])" class="panel panel-info" style="margin-top:6px">
+          <div class="panel-heading">
+            {{ key }} (Array)
+            <div class="pull-right">
+              <button class="btn btn-success btn-xs" (click)="addArrayItem(data[key])">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+              <button class="btn btn-info btn-xs" (click)="copyArray(data, key)">
+                <span class="glyphicon glyphicon-duplicate"></span>
+              </button>
+              <button class="btn btn-danger btn-xs" (click)="removeArray(data, key)">
+                <span class="glyphicon glyphicon-trash"></span>
+              </button>
+              <a data-toggle="collapse" href="#arr-{{uid}}-{{key}}" class="btn btn-default btn-xs">
+                <span class="glyphicon glyphicon-chevron-down"></span>
+              </a>
+            </div>
+          </div>
+
+          <div id="arr-{{uid}}-{{key}}" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <div *ngFor="let item of data[key]; let i=index" class="panel panel-default">
+                <div class="panel-heading">
+                  Item {{i+1}}
+                  <div class="pull-right">
+                    <button class="btn btn-info btn-xs"
+                            (click)="duplicateArrayItem(data[key], i)">
+                      <span class="glyphicon glyphicon-duplicate"></span>
+                    </button>
+                    <button class="btn btn-danger btn-xs"
+                            (click)="removeArrayItem(data[key], i)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  <input *ngIf="isPrimitive(item)"
+                         class="form-control"
+                         [(ngModel)]="data[key][i]">
+                  <app-json-editor *ngIf="isObject(item)"
+                                   [data]="item"
+                                   [parent]="data[key]"
+                                   [parentKey]="i">
+                  </app-json-editor>
+                </div>
+              </div>
+
+              <button class="btn btn-success btn-xs"
+                      (click)="addArrayItem(data[key])">Add Item</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-success btn-xs" (click)="addField(data)">Add Field</button>
+    </div>
+  </div>
+</div>

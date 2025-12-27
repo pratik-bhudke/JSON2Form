@@ -1,0 +1,26 @@
+<div class="container">
+  <h3>JSON2Form - Editor</h3>
+
+  <textarea class="form-control" rows="10" [(ngModel)]="jsonText"></textarea>
+  <br>
+  <button class="btn btn-primary" (click)="preview()">Preview</button>
+  <button class="btn btn-default" (click)="format()">Format</button>
+
+  <div class="modal fade in" style="display:block" *ngIf="show">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="close" (click)="show=false">&times;</button>
+          <h4>JSON2Form - Form</h4>
+        </div>
+        <div class="modal-body" style="max-height:70vh;overflow:auto">
+          <app-json-editor [data]="data"></app-json-editor>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" (click)="save()">Save</button>
+          <button class="btn btn-danger" (click)="show=false">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
